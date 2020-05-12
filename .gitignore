@@ -1,1 +1,6 @@
 /.idea
+/postgresql/
+/src/storage/logs/
+/src/vendor
+/src/.env
+

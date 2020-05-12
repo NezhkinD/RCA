@@ -1,0 +1,49 @@
+version: '3.3'
+services:
+
+  php_fpm:
+    restart: always
+    build:
+      context: docker/php_fpm
+    volumes:
+      - ./src:/var/www/html
+      - ./docker/php_fpm/supervisor/etc/:/etc/supervisor
+      - ./src/storage/logs/supervisor/log:/var/log/supervisor
+
+  supervisor:
+    restart: always
+    build:
+      context: docker/supervisor
+    volumes:
+      - ./src:/var/www/html
+      - ./docker/supervisor/etc/:/etc/supervisor
+      - ./src/storage/logs/supervisor/:/var/log/supervisor
+
+  nginx:
+    image: nginx:alpine
+    restart: always
+    tty: true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./src:/var/www/html
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+    depends_on:
+      - php_fpm
+
+  redis:
+    restart: always
+    image: redis:6.0.1-buster
+    env_file:
+      - src/.env
+
+  postgres:
+    restart: always
+    image: postgres:12-alpine
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgresql/data:/var/lib/postgresql/data
+    env_file:
+      - src/.env
