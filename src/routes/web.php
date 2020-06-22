@@ -97,7 +97,7 @@ $router->get('/captcha', function () {
 
 $router->get('/', function (Request $request) {
 
-    return (new rcaChecksList)->getUsingId(1);
+    return app()->version();
 
 });
 
