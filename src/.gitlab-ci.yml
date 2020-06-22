@@ -1,0 +1,6 @@
+image: php:7.4
+
+test:app:
+  script:
+    - vendor/bin/phpunit
+
